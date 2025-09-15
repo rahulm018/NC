@@ -6,47 +6,32 @@
     <title>Non-Conformities Listing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom scrollbar for better aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
-        }
-        /* Style for the linkage popover */
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        /* Popover base styles */
         .popover {
-            display: none;
-            position: absolute;
-            z-index: 50;
-            background-color: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
+            display: none; position: absolute; z-index: 50; background-color: white;
+            border: 1px solid #e5e7eb; border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             padding: 0.75rem;
-            width: 150px;
         }
-        .popover.active {
-            display: block;
+        .popover.active { display: block; }
+
+        /* Custom Tooltip */
+        #customTooltip {
+            position: absolute; display: none; background-color: #1f2937; color: white;
+            padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;
+            z-index: 100; pointer-events: none;
         }
+
+        /* Status badges */
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25em 0.6em;
-            font-size: 0.8rem;
-            font-weight: 500;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 9999px;
+            display: inline-flex; align-items: center; padding: 0.25em 0.6em; font-size: 0.8rem;
+            font-weight: 500; border-radius: 9999px;
         }
         .status-open { background-color: #dbeafe; color: #1e40af; }
         .status-closed { background-color: #d1fae5; color: #065f46; }
@@ -54,18 +39,37 @@
         .status-draft { background-color: #e5e7eb; color: #4b5563; }
         .status-dispute-accept { background-color: #fef3c7; color: #92400e; }
         .status-capa-closed { background-color: #e0e7ff; color: #3730a3; }
+        
+        /* Table sort icon */
+        .sort-icon { opacity: 0.4; transition: opacity 0.15s ease-in-out; }
+        th:hover .sort-icon { opacity: 1; }
+        .sort-icon.active { opacity: 1; color: #2563eb; }
+        
+        /* Truncate text with ellipsis */
+        .truncate-cell { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Horizontal scroll indicator */
+        .table-container { position: relative; }
+        .table-container::after {
+            content: ''; position: absolute; top: 0; right: 0; bottom: 0;
+            width: 30px; pointer-events: none;
+            background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+            transition: opacity 0.2s; opacity: 0;
+        }
+        .table-container.is-scrolling-right::after { opacity: 1; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800">
 
     <div id="app-container" class="p-4 md:p-6 lg:p-8">
 
-        <!-- Header: Title, Actions -->
+        <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
             <h1 class="text-2xl font-semibold text-gray-900">Non-Conformities</h1>
             <div class="flex items-center space-x-2 mt-4 md:mt-0">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 transition duration-150 text-sm font-medium">
-                    Create New Non Conformity
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 transition duration-150 text-sm font-medium flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                    New NC
                 </button>
                 <div class="flex items-center border border-gray-300 rounded-md">
                     <button class="px-3 py-2 text-sm border-r border-gray-300 hover:bg-gray-100 rounded-l-md">Attributes</button>
@@ -84,311 +88,503 @@
         </div>
 
         <!-- Filter Bar -->
-        <div class="flex flex-wrap gap-4 items-center mb-4 p-4 bg-white rounded-lg border border-gray-200">
-             <!-- Global Search -->
-            <div class="relative flex-grow min-w-[200px]">
-                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                     <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-                    </svg>
+        <div class="space-y-3 mb-4 p-4 bg-white rounded-lg border border-gray-200">
+            <div class="flex flex-wrap gap-4 items-center">
+                 <!-- Global Search -->
+                <div class="relative flex-grow min-w-[200px]">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <input type="text" id="globalSearch" class="block w-full rounded-md border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" placeholder="Search by Name, Part #, Supplier...">
                 </div>
-                <input type="text" id="globalSearch" class="block w-full rounded-md border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" placeholder="Search...">
-            </div>
-            
-            <!-- Filters -->
-            <select id="timeRangeFilter" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option selected>Time Range</option>
-                <option>Last 7 days</option>
-                <option>1 month</option>
-                <option>3 months</option>
-                <option>6 months</option>
-                <option>1 year</option>
-                <option>2 years</option>
-                <option>3 years</option>
-            </select>
-            
-            <select id="statusFilter" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option selected>Status</option>
-                <option>All</option>
-                <option>Open NCs</option>
-                <option>Closed NCs</option>
-                <option>Cancelled NCs</option>
-            </select>
-            
-            <button id="clearFiltersBtn" class="hidden text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                Clear Filter
-            </button>
+                
+                <!-- Filters -->
+                <select id="timeRangeFilter" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">All Time</option>
+                    <option value="7d">Last 7 days</option>
+                    <option value="1m">1 month</option>
+                    <option value="3m">3 months</option>
+                    <option value="6m">6 months</option>
+                    <option value="1y">1 year</option>
+                    <option value="2y">2 years</option>
+                    <option value="3y">3 years</option>
+                </select>
+                
+                <select id="statusFilter" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="">All Statuses</option>
+                    <option value="Open">Open NCs</option>
+                    <option value="Closed">Closed NCs</option>
+                    <option value="Cancelled">Cancelled NCs</option>
+                    <option value="Draft">Draft NCs</option>
+                </select>
 
-            <div class="flex-grow"></div>
+                <div class="flex-grow"></div>
 
-            <!-- Action Icons -->
-            <div class="flex items-center space-x-1 border border-gray-300 rounded-md p-1">
-                 <button class="p-1.5 rounded-md hover:bg-gray-100 text-gray-500" title="Export to Excel">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button id="columnConfigBtn" class="p-1.5 rounded-md hover:bg-gray-100 text-gray-500" title="Configure Columns">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                </button>
+                <!-- Action Icons -->
+                <div class="flex items-center space-x-1 border border-gray-300 rounded-md p-1">
+                     <button class="p-1.5 rounded-md hover:bg-gray-100 text-gray-500" data-tooltip="Export to Excel" aria-label="Export data to Excel">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </button>
+                    <button id="columnConfigBtn" class="p-1.5 rounded-md hover:bg-gray-100 text-gray-500" data-tooltip="Configure Columns" aria-label="Configure Columns">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    </button>
+                </div>
             </div>
+            <!-- Applied Filters Pills -->
+            <div id="filterPillsContainer" class="flex flex-wrap gap-2 items-center min-h-[28px]"></div>
         </div>
 
         <!-- Data Table -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden relative">
+            <div id="table-container" class="table-container overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
-                        <tr>
-                            <!-- Table Headers -->
-                            <th scope="col" class="sticky left-0 bg-gray-50 z-10 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 w-28">Actions</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Supplier Name</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Plant Name</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Part Name</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Part Number</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Incident Date</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Defect Category</th>
-                            <!-- Add more headers as needed and control visibility via JS -->
+                        <tr id="table-header-row">
+                            <!-- Headers dynamically generated -->
                         </tr>
                     </thead>
                     <tbody id="nc-table-body" class="divide-y divide-gray-200 bg-white">
                         <!-- Table rows will be dynamically inserted here -->
                     </tbody>
                 </table>
+                 <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16 px-6">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No Non-Conformities Found</h3>
+                    <p class="mt-1 text-sm text-gray-500">Try adjusting your filters or create a new non-conformity.</p>
+                </div>
+            </div>
+             <!-- Loading State -->
+             <div id="loading-state" class="hidden absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
+                <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             </div>
         </div>
         
         <!-- Pagination -->
-        <div class="flex items-center justify-between mt-4 text-sm text-gray-600">
-            <div>Showing 1 to 10 of 704 records</div>
-            <div class="flex items-center">
-                <button class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <span class="px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-md">1</span>
-                <span class="px-3 py-1 rounded-md hover:bg-gray-100 cursor-pointer">2</span>
-                <span class="px-3 py-1 rounded-md hover:bg-gray-100 cursor-pointer">3</span>
-                <span class="px-2">...</span>
-                <button class="p-2 rounded-md hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
+        <div class="flex flex-col md:flex-row items-center justify-between mt-4 text-sm text-gray-600 gap-4">
+            <div class="flex items-center gap-2">
+                <span>Rows per page:</span>
+                <select id="rowsPerPage" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                </select>
+            </div>
+            <div id="pagination-summary">Showing 0 to 0 of 0 records</div>
+            <div id="pagination-controls" class="flex items-center">
+                <!-- Pagination controls dynamically generated -->
             </div>
         </div>
     </div>
     
-    <!-- Linkage Popover -->
-    <div id="linkagePopover" class="popover">
-        <ul class="space-y-2" id="linkage-list">
-            <!-- Links will be dynamically inserted here -->
-        </ul>
-    </div>
-
-    <!-- Column Configuration Popover -->
+    <!-- Popovers and Tooltips -->
+    <div id="linkagePopover" class="popover w-40"><ul class="space-y-2" id="linkage-list"></ul></div>
     <div id="columnConfigPopover" class="popover w-64">
         <h4 class="font-semibold mb-2">Configure Columns</h4>
-        <div id="column-checkboxes" class="max-h-60 overflow-y-auto space-y-1">
-             <!-- Column checkboxes will be inserted here -->
-        </div>
+        <div id="column-checkboxes" class="max-h-60 overflow-y-auto space-y-1"></div>
     </div>
+    <div id="customTooltip"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // --- MOCK DATA ---
-            const mockData = [
-                { id: 1, status: 'Draft', supplierName: 'Auto Products (256480)', plantName: '', name: 'NC-2025-XXXX', partName: 'Mat.cabine tunnel', partNumber: '2124161', incidentDate: '15 Sep 2025', defectCategory: '', linkages: { count: 0 } },
-                { id: 2, status: 'Draft', supplierName: 'Auto Products (256480)', plantName: 'Narasimha', name: 'UK Sample Test 40', partName: 'ARMATURE BALANCING COMPOUND', partNumber: '28-0036-001', incidentDate: '15 Sep 2025', defectCategory: '', linkages: { count: 1, items: ['8D'] } },
-                { id: 3, status: 'Dispute Accept', supplierName: 'SRI RAM RUBBER PRODUCTS', plantName: '', name: 'totestst23', partName: '.092" THK x 413" WD x .486" L', partNumber: '981422', incidentDate: '10 Sep 2025', defectCategory: 'Dimensional', linkages: { count: 3, items: ['8D', 'CAPA', 'AD'] } },
-                { id: 4, status: 'CAPA Closed', supplierName: 'Auto Products (256480)', plantName: 'Bengaluru', name: 'NC-2025-3Mat,cabine tunnel790', partName: 'Mat.cabine tunnel', partNumber: '2124161', incidentDate: '10 Sep 2025', defectCategory: 'Dimensional', linkages: { count: 0 } },
-                { id: 5, status: 'Open', supplierName: 'SRI RAM RUBBER PRODUCTS', plantName: '', name: 'Incident_test', partName: '149-70x210 w/20mm dry tab', partNumber: '149-70x210 w/20mm dry tab', incidentDate: '08 Sep 2025', defectCategory: '', linkages: { count: 2, items: ['CAPA', 'CopQ'] } },
-                { id: 6, status: 'Open', supplierName: 'Auto Products (256480)', plantName: 'Winch Broken Arrow', name: 'NC-2025-3775', partName: 'Armature', partNumber: 'PN 0044', incidentDate: '08 Sep 2025', defectCategory: 'Material', linkages: { count: 1, items: ['8D'] } },
-                { id: 7, status: 'Cancelled', supplierName: 'Supplier NC 1 by Syed', plantName: '', name: '000123', partName: 'ASSEMBLY,HOUSING,SLOTTED', partNumber: '000123-3', incidentDate: '08 Sep 2025', defectCategory: 'Functional', linkages: { count: 0 } },
-                { id: 8, status: 'Closed', supplierName: 'Auto Products (256480)', plantName: '', name: 'Test NC 09082025', partName: 'ASSEMBLY,HOUSING,SLOTTED', partNumber: '60--0550--400', incidentDate: '08 Sep 2025', defectCategory: 'Functional', linkages: { count: 0 } },
-            ];
+        // --- Mock Data and State Management ---
+        const MOCK_DATA = [
+            { id: 1, incidentNumber: 'INC-0203902901', status: 'Draft', supplierName: 'Auto Products', supplierCode: '256480', plantName: 'HQ', name: 'NC-2025-XXXX', partName: 'Mat.cabine tunnel', partNumber: 'PN2124161', incidentDate: '2025-09-15', defectCategory: 'Cosmetic', defectName: 'Scratch', isFieldConcern: true, coordinator: 'Alice Johnson', repeatNCStatus: 'First Time', incidentCategory: 'Supplier', incidentType: 'Product', description: 'Deep scratch found on main housing during final inspection.', totalNCParts: 5, rpn: 120, commodity: 'Plastics', priority: 'High', prrStatus: 'Pending', linkages: { count: 1, items: ['8D'] } },
+            { id: 2, incidentNumber: 'INC-0203902902', status: 'Open', supplierName: 'SRI RAM RUBBER PRODUCTS', supplierCode: 'SRR-45', plantName: 'Bengaluru', name: 'UK Sample Test 40', partName: 'ARMATURE BALANCING COMPOUND', partNumber: 'PN28-0036-001', incidentDate: '2025-09-10', defectCategory: 'Dimensional', defectName: 'Out of tolerance', isFieldConcern: false, coordinator: 'Bob Williams', repeatNCStatus: 'First Time', incidentCategory: 'Process', incidentType: 'Process', description: 'Part length exceeds max tolerance by 2mm.', totalNCParts: 150, rpn: 250, commodity: 'Rubber', priority: 'High', prrStatus: 'Approved', linkages: { count: 3, items: ['8D', 'CAPA', 'AD'] } },
+            { id: 3, incidentNumber: 'INC-0203902903', status: 'Dispute Accept', supplierName: 'New Wave Components', supplierCode: 'NW-01', plantName: 'Narasimha', name: 'totestst23', partName: '.092" THK x 413" WD x .486" L', partNumber: 'PN981422', incidentDate: '2025-08-20', defectCategory: 'Functional', defectName: 'Incorrect Material', isFieldConcern: false, coordinator: 'Charlie Brown', repeatNCStatus: 'Repeat', incidentCategory: 'Supplier', incidentType: 'Material', description: 'Used incorrect grade of steel, failed stress test.', totalNCParts: 25, rpn: 450, commodity: 'Metals', priority: 'Critical', prrStatus: 'Rejected', linkages: { count: 0 } },
+            { id: 4, incidentNumber: 'INC-0203902904', status: 'CAPA Closed', supplierName: 'Global Tech Inc.', supplierCode: 'GT-99', plantName: 'Winch Broken Arrow', name: 'NC-2025-3Mat', partName: 'Mat.cabine tunnel', partNumber: 'PN2124161', incidentDate: '2025-08-01', defectCategory: 'Electrical', defectName: 'Short circuit', isFieldConcern: true, coordinator: 'Diana Prince', repeatNCStatus: 'First Time', incidentCategory: 'Supplier', incidentType: 'Component', description: 'Component failure causing short on main board.', totalNCParts: 8, rpn: 310, commodity: 'Electronics', priority: 'High', prrStatus: 'Approved', linkages: { count: 2, items: ['CAPA', 'CopQ'] } },
+            { id: 5, incidentNumber: 'INC-0203902905', status: 'Open', supplierName: 'Auto Products', supplierCode: '256480', plantName: 'HQ', name: 'Incident_test', partName: '149-70x210 w/20mm dry tab', partNumber: 'PN149-70x210', incidentDate: '2025-07-11', defectCategory: 'Cosmetic', defectName: 'Discoloration', isFieldConcern: false, coordinator: 'Alice Johnson', repeatNCStatus: 'First Time', incidentCategory: 'Process', incidentType: 'Process', description: 'Yellowish tint observed on parts from Lot #8891.', totalNCParts: 200, rpn: 80, commodity: 'Plastics', priority: 'Low', prrStatus: 'Pending', linkages: { count: 0 } },
+            { id: 6, incidentNumber: 'INC-0203902906', status: 'Closed', supplierName: 'Supplier NC 1 by Syed', supplierCode: 'SY-123', plantName: '', name: 'NC-2025-3775', partName: 'Armature', partNumber: 'PN0044', incidentDate: '2025-06-15', defectCategory: 'Material', defectName: 'Contamination', isFieldConcern: false, coordinator: 'Edward Nigma', repeatNCStatus: 'First Time', incidentCategory: 'Supplier', incidentType: 'Material', description: 'Foreign particles found embedded in the material.', totalNCParts: 30, rpn: 180, commodity: 'Composites', priority: 'Medium', prrStatus: 'Approved', linkages: { count: 1, items: ['8D'] } },
+            { id: 7, incidentNumber: 'INC-0203902907', status: 'Cancelled', supplierName: 'Auto Products', supplierCode: '256480', plantName: 'HQ', name: '000123', partName: 'ASSEMBLY,HOUSING,SLOTTED', partNumber: 'PN000123-3', incidentDate: '2025-05-30', defectCategory: 'Administrative', defectName: 'Duplicate Entry', isFieldConcern: false, coordinator: 'Frank Castle', repeatNCStatus: 'N/A', incidentCategory: 'Internal', incidentType: 'Admin', description: 'NC was created in error, duplicate of INC-0203902906.', totalNCParts: 0, rpn: 0, commodity: 'N/A', priority: 'Low', prrStatus: 'N/A', linkages: { count: 0 } },
+            { id: 8, incidentNumber: 'INC-0203902908', status: 'Closed', supplierName: 'SRI RAM RUBBER PRODUCTS', supplierCode: 'SRR-45', plantName: 'Bengaluru', name: 'Test NC 09082025', partName: 'Gasket Seal', partNumber: 'PN60-0550-400', incidentDate: '2024-10-01', defectCategory: 'Dimensional', defectName: 'Wrong thickness', isFieldConcern: false, coordinator: 'Bob Williams', repeatNCStatus: 'Repeat', incidentCategory: 'Supplier', incidentType: 'Product', description: 'Gasket thickness was 1.5mm instead of specified 2.0mm.', totalNCParts: 500, rpn: 220, commodity: 'Rubber', priority: 'Medium', prrStatus: 'Approved', linkages: { count: 0 } },
+        ];
+        
+        const ALL_COLUMNS = [
+            { key: 'status', label: 'Status', sortable: true },
+            { key: 'supplierName', label: 'Supplier Name', sortable: true },
+            { key: 'plantName', label: 'Plant Name', sortable: true },
+            { key: 'name', label: 'Name', sortable: true },
+            { key: 'partName', label: 'Part Name', sortable: true },
+            { key: 'partNumber', label: 'Part Number', sortable: false },
+            { key: 'incidentDate', label: 'Incident Date', sortable: true },
+            { key: 'defectCategory', label: 'Defect Category', sortable: true },
+            { key: 'defectName', label: 'Defect Name', sortable: true },
+            { key: 'incidentNumber', label: 'Incident Number', sortable: true },
+            { key: 'isFieldConcern', label: 'Is Field Concern', sortable: true },
+            { key: 'age', label: 'Age (Days)', sortable: true },
+            { key: 'coordinator', label: 'Coordinator', sortable: true },
+            { key: 'repeatNCStatus', label: 'Repeat NC Status', sortable: true },
+            { key: 'incidentCategory', label: 'Incident Category', sortable: true },
+            { key: 'incidentType', label: 'Incident Type', sortable: true },
+            { key: 'description', label: 'Description', sortable: false },
+            { key: 'totalNCParts', label: 'Total NC Parts', sortable: true },
+            { key: 'supplierCode', label: 'Supplier Code', sortable: true },
+            { key: 'rpn', label: 'RPN', sortable: true },
+            { key: 'commodity', label: 'Commodity', sortable: true },
+            { key: 'priority', label: 'Priority', sortable: true },
+            { key: 'prrStatus', label: 'PRR Status', sortable: true },
+        ];
 
-            const allColumns = [
-                { key: 'status', label: 'Status' },
-                { key: 'supplierName', label: 'Supplier Name' },
-                { key: 'plantName', label: 'Plant Name' },
-                { key: 'name', label: 'Name' },
-                { key: 'partName', label: 'Part Name' },
-                { key: 'partNumber', label: 'Part Number' },
-                { key: 'incidentDate', label: 'Incident Date' },
-                { key: 'defectCategory', label: 'Defect Category' },
-            ];
-            let visibleColumns = allColumns.map(c => c.key);
+        let state = {
+            data: [],
+            filteredData: [],
+            visibleColumns: ['status', 'supplierName', 'name', 'partName', 'incidentDate', 'defectCategory', 'age', 'priority'],
+            sortConfig: { key: 'incidentDate', direction: 'desc' },
+            currentPage: 1,
+            rowsPerPage: 10,
+            filters: { globalSearch: '', status: '', timeRange: '' },
+            searchDebounceTimer: null
+        };
+        
+        // --- DOM Elements ---
+        const DOMElements = {
+            tableBody: document.getElementById('nc-table-body'),
+            tableHeaderRow: document.getElementById('table-header-row'),
+            paginationSummary: document.getElementById('pagination-summary'),
+            paginationControls: document.getElementById('pagination-controls'),
+            emptyState: document.getElementById('empty-state'),
+            loadingState: document.getElementById('loading-state'),
+            globalSearch: document.getElementById('globalSearch'),
+            statusFilter: document.getElementById('statusFilter'),
+            timeRangeFilter: document.getElementById('timeRangeFilter'),
+            rowsPerPage: document.getElementById('rowsPerPage'),
+            filterPillsContainer: document.getElementById('filterPillsContainer'),
+            tableContainer: document.getElementById('table-container'),
+            customTooltip: document.getElementById('customTooltip'),
+            columnConfigBtn: document.getElementById('columnConfigBtn'),
+            columnConfigPopover: document.getElementById('columnConfigPopover'),
+            columnCheckboxes: document.getElementById('column-checkboxes'),
+            linkagePopover: document.getElementById('linkagePopover'),
+            linkageList: document.getElementById('linkage-list'),
+        };
 
-            const tableBody = document.getElementById('nc-table-body');
-            const linkagePopover = document.getElementById('linkagePopover');
-            const linkageList = document.getElementById('linkage-list');
-            const columnConfigBtn = document.getElementById('columnConfigBtn');
-            const columnConfigPopover = document.getElementById('columnConfigPopover');
-            const columnCheckboxesContainer = document.getElementById('column-checkboxes');
-            
-            const filters = [document.getElementById('globalSearch'), document.getElementById('timeRangeFilter'), document.getElementById('statusFilter')];
-            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-            
-            // --- FUNCTIONS ---
-            
-            function getStatusClass(status) {
-                switch (status.toLowerCase()) {
-                    case 'open': return 'status-open';
-                    case 'closed': return 'status-closed';
-                    case 'cancelled': return 'status-cancelled';
-                    case 'draft': return 'status-draft';
-                    case 'dispute accept': return 'status-dispute-accept';
-                    case 'capa closed': return 'status-capa-closed';
-                    default: return 'bg-gray-200 text-gray-800';
-                }
-            }
+        // --- Core Application Logic ---
 
-            function renderTable() {
-                tableBody.innerHTML = '';
-                mockData.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-gray-50';
-                    
-                    // Actions Cell (Sticky)
-                    let actionsCellHTML = `
-                        <td class="sticky left-0 bg-white group-hover:bg-gray-50 z-10 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                            <div class="flex items-center space-x-2">
-                                <button class="p-1.5 text-gray-400 hover:text-green-600" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                                </button>
-                                <button class="p-1.5 text-gray-400 hover:text-blue-600" title="View">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                                </button>
-                                <div class="relative">
-                                    <button class="linkage-btn p-1.5 rounded-full ${item.linkages.count > 0 ? 'text-gray-600 hover:text-black' : 'text-gray-300 cursor-not-allowed'}" data-linkages='${JSON.stringify(item.linkages)}' title="View Linkages">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
-                                    </button>
-                                    ${item.linkages.count > 1 ? `<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">${item.linkages.count}</span>` : ''}
-                                </div>
-                            </div>
-                        </td>
-                    `;
+        document.addEventListener('DOMContentLoaded', () => {
+            initEventListeners();
+            DOMElements.loadingState.classList.remove('hidden');
+            setTimeout(() => { // Simulate API call
+                state.data = MOCK_DATA.map(d => ({...d, age: calculateAge(d.incidentDate)}));
+                updateView();
+                renderColumnCheckboxes();
+                DOMElements.loadingState.classList.add('hidden');
+            }, 500);
+        });
 
-                    // Dynamic Data Cells
-                    let dataCellsHTML = visibleColumns.map(colKey => {
-                        const colConfig = allColumns.find(c => c.key === colKey);
-                        if (!colConfig) return '';
-                        
-                        let cellContent = item[colKey] || '-';
-                        if (colKey === 'status') {
-                            cellContent = `<span class="status-badge ${getStatusClass(item.status)}">${item.status}</span>`;
-                        }
-
-                        return `<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${cellContent}</td>`;
-                    }).join('');
-
-                    tr.innerHTML = actionsCellHTML + dataCellsHTML;
-                    tableBody.appendChild(tr);
+        function updateView() {
+            applyFilters();
+            applySorting();
+            renderPills();
+            renderTable();
+            renderPagination();
+        }
+        
+        function applyFilters() {
+            const { globalSearch, status } = state.filters;
+            const searchLower = globalSearch.toLowerCase();
+            state.filteredData = state.data.filter(item => {
+                const searchMatch = !searchLower || Object.entries(item).some(([key, val]) => {
+                    if (key === 'linkages') return false; // Don't search in linkage object
+                    return String(val).toLowerCase().includes(searchLower)
                 });
-            }
+                const statusMatch = !status || item.status === status;
+                return searchMatch && statusMatch;
+            });
+        }
 
-            function togglePopover(popover, button) {
-                if (popover.classList.contains('active')) {
-                    popover.classList.remove('active');
-                    return;
-                }
+        function applySorting() {
+            const { key, direction } = state.sortConfig;
+            if (!key) return;
+            state.filteredData.sort((a, b) => {
+                if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+                if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        
+        // --- Rendering Functions ---
+
+        function renderTable() {
+            renderHeaders();
+            const { tableBody, emptyState } = DOMElements;
+            const paginatedData = paginate(state.filteredData, state.currentPage, state.rowsPerPage);
+
+            tableBody.innerHTML = '';
+            tableBody.classList.toggle('hidden', paginatedData.length === 0);
+            emptyState.classList.toggle('hidden', paginatedData.length > 0);
+            
+            paginatedData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 group';
                 
-                // Close all other popovers
-                document.querySelectorAll('.popover.active').forEach(p => p.classList.remove('active'));
+                const isClosed = ['Closed', 'Cancelled'].includes(item.status);
 
-                const rect = button.getBoundingClientRect();
-                popover.style.top = `${rect.bottom + window.scrollY + 5}px`;
-                popover.style.left = `${rect.left + window.scrollX}px`;
-                popover.classList.add('active');
-            }
-            
-            function checkFilters() {
-                const isFilterApplied = filters.some(el => (el.tagName === 'SELECT' && el.selectedIndex > 0) || (el.tagName === 'INPUT' && el.value.trim() !== ''));
-                clearFiltersBtn.classList.toggle('hidden', !isFilterApplied);
-            }
-            
-            function renderColumnCheckboxes() {
-                columnCheckboxesContainer.innerHTML = '';
-                allColumns.forEach(col => {
-                    const isChecked = visibleColumns.includes(col.key);
-                    const div = document.createElement('div');
-                    div.className = 'flex items-center';
-                    div.innerHTML = `
-                        <input id="col-${col.key}" type="checkbox" ${isChecked ? 'checked' : ''} data-key="${col.key}" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 column-toggle">
-                        <label for="col-${col.key}" class="ml-2 block text-sm text-gray-700">${col.label}</label>
-                    `;
-                    columnCheckboxesContainer.appendChild(div);
+                let cellsHTML = `
+                    <td class="sticky left-0 bg-white group-hover:bg-gray-50 z-10 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium">
+                        <div class="flex items-center space-x-2">
+                             <button class="p-1.5 text-gray-400 hover:text-green-600 ${isClosed ? 'opacity-50 cursor-not-allowed' : ''}" data-tooltip="Edit" ${isClosed ? 'disabled' : ''}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <button class="p-1.5 text-gray-400 hover:text-blue-600" data-tooltip="View">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                            <div class="relative">
+                                <button class="linkage-btn p-1.5 rounded-full ${item.linkages.count > 0 ? 'text-gray-600 hover:text-black' : 'text-gray-300 cursor-not-allowed'}" data-linkages='${JSON.stringify(item.linkages)}' data-tooltip="View Linkages">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" /></svg>
+                                </button>
+                                ${item.linkages.count > 1 ? `<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white pointer-events-none">${item.linkages.count}</span>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                `;
+
+                state.visibleColumns.forEach(key => {
+                    const cellValue = item[key];
+                    let cellContent = cellValue ?? '-';
+                    if (key === 'status') {
+                        cellContent = `<span class="status-badge ${getStatusClass(item.status)}">${item.status}</span>`;
+                    } else if (typeof cellValue === 'boolean') {
+                        cellContent = cellValue ? 'Yes' : 'No';
+                    } else if (['supplierName', 'partName', 'description'].includes(key) && cellValue) {
+                         cellContent = `<div class="truncate-cell" data-tooltip="${cellValue}">${cellValue}</div>`;
+                    }
+                    cellsHTML += `<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${cellContent}</td>`;
                 });
+                
+                tr.innerHTML = cellsHTML;
+                tableBody.appendChild(tr);
+            });
+            handleTableScroll();
+        }
+        
+        function renderHeaders() {
+            let headerHTML = `<th scope="col" class="sticky left-0 bg-gray-50 z-10 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 w-32">Actions</th>`;
+            state.visibleColumns.forEach(key => {
+                const colConfig = ALL_COLUMNS.find(c => c.key === key);
+                if (!colConfig) return;
+
+                let sortIcon = '';
+                if(colConfig.sortable) {
+                    const isSorted = state.sortConfig.key === key;
+                    const iconDir = state.sortConfig.direction === 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7';
+                    sortIcon = `
+                        <button class="ml-1" data-sort-key="${key}" aria-label="Sort by ${colConfig.label}">
+                            <svg class="sort-icon h-4 w-4 ${isSorted ? 'active' : ''}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconDir}" /></svg>
+                        </button>`;
+                }
+                headerHTML += `
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        <div class="flex items-center">${colConfig.label} ${sortIcon}</div>
+                    </th>`;
+            });
+            DOMElements.tableHeaderRow.innerHTML = headerHTML;
+        }
+        
+        function renderPills() {
+            const { filterPillsContainer, globalSearch, statusFilter } = DOMElements;
+            filterPillsContainer.innerHTML = '';
+            let hasFilters = false;
+            Object.entries(state.filters).forEach(([key, value]) => {
+                if (!value) return;
+                hasFilters = true;
+                let label = '';
+                if (key === 'globalSearch') label = `Search: "${value}"`;
+                else if (key === 'status') label = statusFilter.options[statusFilter.selectedIndex].text;
+                
+                if (label) {
+                    filterPillsContainer.innerHTML += `
+                        <span class="inline-flex items-center gap-x-1.5 rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+                            ${label}
+                            <button type="button" class="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-blue-600/20" data-filter-key="${key}" aria-label="Remove ${label} filter">
+                                <svg viewBox="0 0 14 14" class="h-3.5 w-3.5 stroke-blue-600/50 group-hover:stroke-blue-600/75"><path d="M4 4l6 6m0-6l-6 6" /></svg>
+                            </button>
+                        </span>`;
+                }
+            });
+
+            if (hasFilters) {
+                 filterPillsContainer.innerHTML += `
+                    <button id="clearFiltersBtn" class="text-sm text-blue-600 hover:underline">Clear All</button>`;
             }
+        }
+        
+        function renderPagination() {
+            const { paginationSummary, paginationControls } = DOMElements;
+            const totalItems = state.filteredData.length;
+            const start = totalItems > 0 ? (state.currentPage - 1) * state.rowsPerPage + 1 : 0;
+            const end = Math.min(start + state.rowsPerPage - 1, totalItems);
+            paginationSummary.textContent = `Showing ${start} to ${end} of ${totalItems} records`;
+            const totalPages = Math.ceil(totalItems / state.rowsPerPage) || 1;
 
+            let controlsHTML = `
+                <button class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50" ${state.currentPage === 1 ? 'disabled' : ''} data-page="prev" aria-label="Previous page">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>`;
+            for(let i = 1; i <= totalPages; i++) {
+                if (totalPages > 5 && (i > 2 && i < totalPages - 1)) {
+                    if (i === 3) controlsHTML += `<span class="px-2">...</span>`; continue;
+                }
+                controlsHTML += `
+                    <button class="px-3 py-1 rounded-md hover:bg-gray-100 ${i === state.currentPage ? 'bg-blue-100 text-blue-700 font-semibold' : ''}" data-page="${i}" aria-label="Go to page ${i}">${i}</button>`;
+            }
+            controlsHTML += `
+                <button class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50" ${state.currentPage === totalPages ? 'disabled' : ''} data-page="next" aria-label="Next page">
+                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>`;
+            paginationControls.innerHTML = controlsHTML;
+        }
 
-            // --- EVENT LISTENERS ---
-
-            // Linkage popover logic
-            tableBody.addEventListener('click', function(e) {
+        function renderColumnCheckboxes() {
+            DOMElements.columnCheckboxes.innerHTML = '';
+            ALL_COLUMNS.forEach(col => {
+                const isChecked = state.visibleColumns.includes(col.key);
+                const div = document.createElement('div');
+                div.className = 'flex items-center';
+                div.innerHTML = `
+                    <input id="col-${col.key}" type="checkbox" ${isChecked ? 'checked' : ''} data-key="${col.key}" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 column-toggle">
+                    <label for="col-${col.key}" class="ml-2 block text-sm text-gray-700 select-none">${col.label}</label>
+                `;
+                DOMElements.columnCheckboxes.appendChild(div);
+            });
+        }
+        
+        // --- Event Handlers & Helpers ---
+        function initEventListeners() {
+            DOMElements.globalSearch.addEventListener('input', e => {
+                clearTimeout(state.searchDebounceTimer);
+                state.searchDebounceTimer = setTimeout(() => {
+                    state.filters.globalSearch = e.target.value; state.currentPage = 1; updateView();
+                }, 300);
+            });
+            DOMElements.statusFilter.addEventListener('change', e => {
+                state.filters.status = e.target.value; state.currentPage = 1; updateView();
+            });
+            DOMElements.rowsPerPage.addEventListener('change', e => {
+                state.rowsPerPage = parseInt(e.target.value, 10); state.currentPage = 1; updateView();
+            });
+            DOMElements.tableContainer.addEventListener('scroll', handleTableScroll);
+            DOMElements.filterPillsContainer.addEventListener('click', e => {
+                 if (e.target.closest('#clearFiltersBtn')) {
+                    DOMElements.globalSearch.value = ''; DOMElements.statusFilter.value = '';
+                    state.filters = { globalSearch: '', status: '', timeRange: ''}; updateView();
+                 }
+                 const pillRemoveBtn = e.target.closest('[data-filter-key]');
+                 if(pillRemoveBtn) {
+                     const key = pillRemoveBtn.dataset.filterKey; state.filters[key] = '';
+                     if(key === 'globalSearch') DOMElements.globalSearch.value = '';
+                     if(key === 'status') DOMElements.statusFilter.value = '';
+                     updateView();
+                 }
+            });
+            DOMElements.tableHeaderRow.addEventListener('click', e => {
+                const sortBtn = e.target.closest('[data-sort-key]'); if(!sortBtn) return;
+                const key = sortBtn.dataset.sortKey;
+                if (state.sortConfig.key === key) {
+                    state.sortConfig.direction = state.sortConfig.direction === 'asc' ? 'desc' : 'asc';
+                } else { state.sortConfig = { key, direction: 'asc' }; }
+                updateView();
+            });
+            DOMElements.paginationControls.addEventListener('click', e => {
+                const pageBtn = e.target.closest('[data-page]'); if(!pageBtn) return;
+                const page = pageBtn.dataset.page;
+                const totalPages = Math.ceil(state.filteredData.length / state.rowsPerPage);
+                if(page === 'next') state.currentPage = Math.min(state.currentPage + 1, totalPages);
+                else if(page === 'prev') state.currentPage = Math.max(state.currentPage - 1, 1);
+                else state.currentPage = parseInt(page, 10);
+                updateView();
+            });
+            document.body.addEventListener('mouseover', e => {
+                const target = e.target.closest('[data-tooltip]'); if (target) showTooltip(target);
+            });
+            document.body.addEventListener('mouseout', e => {
+                const target = e.target.closest('[data-tooltip]'); if (target) hideTooltip();
+            });
+            DOMElements.tableBody.addEventListener('click', e => {
                 const linkageBtn = e.target.closest('.linkage-btn');
                 if (linkageBtn) {
+                    e.stopPropagation();
                     const linkages = JSON.parse(linkageBtn.dataset.linkages);
-                    if (linkages.count === 0) return;
-
-                    linkageList.innerHTML = '';
-                    if (linkages.items && linkages.items.length > 0) {
-                        linkages.items.forEach(link => {
-                            const li = document.createElement('li');
-                            li.innerHTML = `<a href="#" class="block text-sm text-blue-600 hover:underline">${link}</a>`;
-                            linkageList.appendChild(li);
-                        });
-                    } else {
-                         linkageList.innerHTML = `<li class="text-sm text-gray-500">No items linked.</li>`;
-                    }
-                    togglePopover(linkagePopover, linkageBtn);
+                    if (linkages.count > 0) openLinkagePopover(linkageBtn, linkages);
                 }
             });
-
-            // Column config popover logic
-            columnConfigBtn.addEventListener('click', function(e) {
+             DOMElements.columnConfigBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                togglePopover(columnConfigPopover, columnConfigBtn);
+                togglePopover(DOMElements.columnConfigPopover, DOMElements.columnConfigBtn);
             });
-            
-            columnCheckboxesContainer.addEventListener('change', (e) => {
+            DOMElements.columnCheckboxes.addEventListener('change', e => {
                 if(e.target.classList.contains('column-toggle')) {
                     const key = e.target.dataset.key;
                     if (e.target.checked) {
-                        if (!visibleColumns.includes(key)) {
-                           // This is simplified, for reordering a drag-and-drop library would be needed
-                           // For now, we just add it to the end.
-                           visibleColumns.push(key);
-                        }
+                        if (!state.visibleColumns.includes(key)) state.visibleColumns.push(key);
                     } else {
-                        visibleColumns = visibleColumns.filter(c => c !== key);
+                        state.visibleColumns = state.visibleColumns.filter(c => c !== key);
                     }
-                    renderTable();
+                    updateView();
                 }
             });
-
-            // Close popovers when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.popover') && !e.target.closest('.linkage-btn') && !e.target.closest('#columnConfigBtn')) {
+            document.addEventListener('click', e => {
+                if (!e.target.closest('.popover')) {
                     document.querySelectorAll('.popover.active').forEach(p => p.classList.remove('active'));
                 }
             });
-            
-            // Filter management
-            filters.forEach(el => el.addEventListener('input', checkFilters));
-            filters.forEach(el => el.addEventListener('change', checkFilters));
-            
-            clearFiltersBtn.addEventListener('click', () => {
-                document.getElementById('globalSearch').value = '';
-                document.getElementById('timeRangeFilter').selectedIndex = 0;
-                document.getElementById('statusFilter').selectedIndex = 0;
-                checkFilters();
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.popover.active').forEach(p => p.classList.remove('active'));
+                }
             });
+        }
+        
+        function openLinkagePopover(button, linkages) {
+            const { linkagePopover, linkageList } = DOMElements;
+            linkageList.innerHTML = '';
+            linkages.items.forEach(link => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#" class="block text-sm text-blue-600 hover:underline">${link}</a>`;
+                linkageList.appendChild(li);
+            });
+            togglePopover(linkagePopover, button, 'left');
+        }
 
-            // --- INITIALIZATION ---
-            renderTable();
-            renderColumnCheckboxes();
-        });
+        function togglePopover(popover, button, position = 'right') {
+            if (popover.classList.contains('active')) {
+                popover.classList.remove('active'); return;
+            }
+            document.querySelectorAll('.popover.active').forEach(p => p.classList.remove('active'));
+            const rect = button.getBoundingClientRect();
+            popover.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            if (position === 'left') {
+                popover.style.left = `${rect.left + window.scrollX}px`;
+            } else {
+                popover.style.left = `${rect.right + window.scrollX - popover.offsetWidth}px`;
+            }
+            popover.classList.add('active');
+        }
+        
+        // --- Utility Functions ---
+        function calculateAge(incidentDate) {
+            const today = new Date('2025-09-15T19:00:00'); // Mock current date for consistent age calculation
+            const incident = new Date(incidentDate);
+            const diffTime = Math.abs(today - incident);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+        function getStatusClass(status) {
+            const map = { 'open': 'status-open', 'closed': 'status-closed', 'cancelled': 'status-cancelled', 'draft': 'status-draft', 'dispute accept': 'status-dispute-accept', 'capa closed': 'status-capa-closed'};
+            return map[status.toLowerCase()] || 'bg-gray-200';
+        }
+        function paginate(array, num, size) { return array.slice((num - 1) * size, num * size); }
+        function handleTableScroll() {
+            const el = DOMElements.tableContainer;
+            const scrollable = el.scrollWidth > el.clientWidth;
+            const scrolled = el.scrollWidth - el.scrollLeft - el.clientWidth > 1;
+            el.classList.toggle('is-scrolling-right', scrollable && scrolled);
+        }
+        function showTooltip(el) {
+            const t = DOMElements.customTooltip; t.textContent = el.dataset.tooltip; t.style.display = 'block';
+            const rect = el.getBoundingClientRect();
+            t.style.top = `${rect.top + window.scrollY - t.offsetHeight - 5}px`;
+            t.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (t.offsetWidth / 2)}px`;
+        }
+        function hideTooltip() { DOMElements.customTooltip.style.display = 'none'; }
     </script>
-
 </body>
 </html>
+
