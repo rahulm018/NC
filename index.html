@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NC Navigation Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #f8fafc; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:1rem; box-shadow:0 4px 6px -1px rgb(0 0 0 / .05), 0 2px 4px -2px rgb(0 0 0 / .05); }
+    .hero-gradient { background: radial-gradient(1200px 400px at 10% -10%, rgba(99,102,241,.15), transparent), radial-gradient(800px 300px at 90% -20%, rgba(59,130,246,.12), transparent); }
+    .step-line:before { content:""; position:absolute; top:22px; left:40px; right:-40px; height:2px; background:#e5e7eb; }
+    @media (max-width: 640px){ .step-line:before{ display:none; } }
+  </style>
+</head>
+<body class="font-sans text-slate-800">
+  <header class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-primary-600 text-white grid place-items-center font-extrabold shadow-sm">N</div>
+          <div>
+            <p class="text-xs tracking-wider text-slate-500 uppercase">NC Module</p>
+            <h1 class="text-lg sm:text-xl font-bold text-slate-900">NC Navigation Hub</h1>
+          </div>
+        </div>
+        <nav class="hidden sm:flex items-center gap-2">
+          <a class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-primary-700 hover:bg-primary-50 rounded-md" href="NC Listing Page1.html">Listing</a>
+          <a class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-primary-700 hover:bg-primary-50 rounded-md" href="#">Creation</a>
+          <a class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-primary-700 hover:bg-primary-50 rounded-md" href="#">View</a>
+          <a class="px-3 py-2 text-sm font-medium text-slate-700 hover:text-primary-700 hover:bg-primary-50 rounded-md" href="#">Dashboard</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <section class="hero-gradient card p-6 sm:p-8 mb-8">
+      <div class="grid gap-6 sm:grid-cols-2">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Showcase your NC flow</h2>
+          <p class="mt-2 text-slate-600">Use this hub to jump between the key pages for a smooth, guided demonstration.</p>
+          <div class="mt-5 flex flex-wrap items-center gap-3">
+            <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-600 text-white font-semibold shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+              Start with Creation
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </a>
+            <a href="#" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-700 border border-slate-200 font-semibold hover:bg-slate-50">Open View Page</a>
+            <a href="#" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-700 border border-slate-200 font-semibold hover:bg-slate-50">Open Dashboard</a>
+          </div>
+        </div>
+        <div class="grid sm:justify-items-end">
+          <ol class="relative step-line grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <li class="card p-4 flex items-start gap-3 relative">
+              <span class="h-8 w-8 rounded-full bg-primary-600 text-white grid place-items-center font-bold flex-shrink-0">1</span>
+              <div>
+                <h3 class="font-semibold">Creation Page</h3>
+                <p class="text-sm text-slate-600">Primary landing page to initiate a Non-Conformance report.</p>
+              </div>
+            </li>
+            <li class="card p-4 flex items-start gap-3 relative">
+              <span class="h-8 w-8 rounded-full bg-primary-600 text-white grid place-items-center font-bold flex-shrink-0">2</span>
+              <div>
+                <h3 class="font-semibold">View Page</h3>
+                <p class="text-sm text-slate-600">Access after submit to review workflow and details.</p>
+              </div>
+            </li>
+            <li class="card p-4 flex items-start gap-3 relative">
+              <span class="h-8 w-8 rounded-full bg-primary-600 text-white grid place-items-center font-bold flex-shrink-0">3</span>
+              <div>
+                <h3 class="font-semibold">Dashboard</h3>
+                <p class="text-sm text-slate-600">View analytics and trends for all NC reports.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <article class="card p-6 flex flex-col">
+        <header class="flex items-start gap-3">
+          <div class="h-10 w-10 rounded-lg bg-primary-100 text-primary-700 grid place-items-center font-extrabold">C</div>
+          <div>
+            <h3 class="text-lg font-semibold text-slate-900">NC Creation Page</h3>
+            <p class="text-sm text-slate-600">Launch a new NC report with structured inputs and smart helpers.</p>
+          </div>
+        </header>
+        <div class="mt-5 flex-1"></div>
+        <div class="mt-5">
+          <a href="#" class="inline-flex w-full justify-center items-center gap-2 px-4 py-2.5 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Open Creation Page</a>
+        </div>
+      </article>
+
+      <article class="card p-6 flex flex-col">
+        <header class="flex items-start gap-3">
+          <div class="h-10 w-10 rounded-lg bg-primary-100 text-primary-700 grid place-items-center font-extrabold">V</div>
+          <div>
+            <h3 class="text-lg font-semibold text-slate-900">NC View Page</h3>
+            <p class="text-sm text-slate-600">Track status, timelines, and actions for a specific NC.</p>
+          </div>
+        </header>
+        <div class="mt-5 flex-1"></div>
+        <div class="mt-5">
+          <a href="#" class="inline-flex w-full justify-center items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-800 border border-slate-200 font-semibold hover:bg-slate-50">Open View Page</a>
+        </div>
+      </article>
+
+      <article class="card p-6 flex flex-col">
+        <header class="flex items-start gap-3">
+          <div class="h-10 w-10 rounded-lg bg-primary-100 text-primary-700 grid place-items-center font-extrabold">D</div>
+          <div>
+            <h3 class="text-lg font-semibold text-slate-900">NC Dashboard Page</h3>
+            <p class="text-sm text-slate-600">Visualize data and manage all Non-Conformance reports.</p>
+          </div>
+        </header>
+        <div class="mt-5 flex-1"></div>
+        <div class="mt-5">
+          <a href="#" class="inline-flex w-full justify-center items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-800 border border-slate-200 font-semibold hover:bg-slate-50">Open Dashboard</a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="card p-4 sm:p-5 flex items-center justify-between">
+      <p class="text-sm text-slate-600">NC Demo • Consistent, modern, and responsive UI</p>
+      <div class="flex items-center gap-2">
+        <a href="#" class="text-sm font-semibold text-primary-700 hover:underline">Creation</a>
+        <span class="text-slate-300">•</span>
+        <a href="#" class="text-sm font-semibold text-primary-700 hover:underline">View</a>
+        <span class="text-slate-300">•</span>
+        <a href="#" class="text-sm font-semibold text-primary-700 hover:underline">Dashboard</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
