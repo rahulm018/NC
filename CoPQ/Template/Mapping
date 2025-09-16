@@ -1,1 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoPQ Template Mapping</title>
+    <style>
+        :root {
+            --primary-color: #005A9C;
+            --secondary-color: #f4f4f4;
+            --border-color: #ddd;
+            --danger-color: #d9534f;
+            --danger-hover-color: #c9302c;
+            --success-color: #5cb85c;
+            --success-hover-color: #4cae4c;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
+        body {
+            font-family: var(--font-family);
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        h2 {
+            margin-top: 30px;
+        }
+
+        .template-selection, .mapping-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            align-self: flex-end; /* Align button to the bottom right of the grid cell */
+            margin-top: 25px; /* Adds space above the button to align with inputs */
+        }
+        
+        .btn-primary:hover {
+            background-color: #004a80;
+        }
+        
+        .btn-delete {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-delete:hover {
+            background-color: var(--danger-hover-color);
+        }
+
+        .mapped-records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .mapped-records-table th, .mapped-records-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .mapped-records-table thead {
+            background-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .mapped-records-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .mapped-records-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .actions {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>CoPQ Template Mapping</h1>
+
+        <section id="template-linking">
+            <h2>Template & NC Type</h2>
+            <div class="template-selection">
+                <div class="form-group">
+                    <label for="template-name">Template Name</label>
+                    <select id="template-name" name="template-name">
+                        <option value="temp1">Material Defect Template</option>
+                        <option value="temp2">Supplier Performance Template</option>
+                        <option value="temp3">Logistics Issue Template</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nc-type">Linked NC Type</label>
+                    <select id="nc-type" name="nc-type">
+                        <option value="nc1">Material Non-Conformance</option>
+                        <option value="nc2">Service Level Non-Conformance</option>
+                        <option value="nc3">Documentation Error</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section id="add-mapping">
+            <h2>Add New Plant/Supplier Mapping</h2>
+            <form class="mapping-form">
+                <div class="form-group">
+                    <label for="plant-name">Plant Name</label>
+                    <select id="plant-name" name="plant-name">
+                        <option value="plantA">Plant A - Bangalore</option>
+                        <option value="plantB">Plant B - Mumbai</option>
+                        <option value="plantC">Plant C - Chennai</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="supplier-code">Supplier Code</label>
+                    <input type="text" id="supplier-code" name="supplier-code" placeholder="e.g., V12345">
+                </div>
+                <div class="form-group">
+                    <label for="supplier-name">Supplier Name</label>
+                    <input type="text" id="supplier-name" name="supplier-name" placeholder="e.g., Global Tech Inc.">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Add Mapping</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="current-mappings">
+            <h2>Current Mappings for: Material Defect Template</h2>
+            <table class="mapped-records-table">
+                <thead>
+                    <tr>
+                        <th>Supplier Code</th>
+                        <th>Supplier Name</th>
+                        <th>Plant Name</th>
+                        <th class="actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>V54321</td>
+                        <td>Component Solutions</td>
+                        <td>Plant A - Bangalore</td>
+                        <td class="actions">
+                            <button class="btn btn-delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>V98765</td>
+                        <td>Advanced Parts Co.</td>
+                        <td>Plant B - Mumbai</td>
+                        <td class="actions">
+                            <button class="btn btn-delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>V11223</td>
+                        <td>Precision Manufacturing</td>
+                        <td>Plant A - Bangalore</td>
+                        <td class="actions">
+                            <button class="btn btn-delete">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+</body>
+</html>
