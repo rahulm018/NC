@@ -128,11 +128,13 @@ function initializeHeader() {
     const menuIconOpen = document.getElementById('menu-icon-open');
     const menuIconClose = document.getElementById('menu-icon-close');
 
-    mobileMenuButton.addEventListener('click', () => {
-        const isHidden = mobileMenu.classList.toggle('hidden');
-        menuIconOpen.classList.toggle('hidden', !isHidden);
-        menuIconClose.classList.toggle('hidden', isHidden);
-    });
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            menuIconOpen.classList.toggle('hidden', !isHidden);
+            menuIconClose.classList.toggle('hidden', isHidden);
+        });
+    }
 
     // 2. Clickable Dropdowns
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
@@ -167,4 +169,3 @@ function initializeHeader() {
 
 // Run the initialization
 document.addEventListener('DOMContentLoaded', initializeHeader);
-
