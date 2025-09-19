@@ -48,16 +48,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-    /* Start hidden */
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-  }
-
-  .dropdown-menu.active {
-    @apply block;
-    /* Animate in */
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
