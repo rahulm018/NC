@@ -66,10 +66,6 @@
 <body class="bg-gray-50 font-sans text-gray-800">
 
     <div id="app-container" class="p-4 md:p-6 lg:p-8">
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-        <h1 class="text-2xl font-semibold text-gray-900">Non-Conformities</h1>
-
-        <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
             <h1 class="text-2xl font-semibold text-gray-900">Non-Conformities</h1>
             <div class="flex items-center space-x-2 mt-4 md:mt-0">
@@ -85,7 +81,6 @@
             </div>
         </header>
 
-        <!-- Tabs -->
         <div class="border-b border-gray-200 mb-4">
             <nav id="tabs-container" class="-mb-px flex space-x-6" aria-label="Tabs">
                 <a href="#" class="tab-item active shrink-0 border-b-2 border-blue-600 px-1 py-3 text-sm font-semibold text-blue-600" aria-current="page" data-tab="my">My Non Conformities</a>
@@ -93,18 +88,15 @@
             </nav>
         </div>
 
-        <!-- Filter Bar -->
         <div class="space-y-3 mb-4 p-4 bg-white rounded-lg border border-gray-200">
             <div class="flex flex-wrap gap-4 items-center">
-                 <!-- Global Search -->
-                <div class="relative flex-grow min-w-[200px]">
+                 <div class="relative flex-grow min-w-[200px]">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
                     </div>
                     <input type="text" id="globalSearch" class="block w-full rounded-md border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" placeholder="Search by Name, Part #, Supplier...">
                 </div>
                 
-                <!-- Filters -->
                 <div class="relative">
                     <select id="timeRangeFilter" class="appearance-none block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm">
                         <option value="">Time Range</option>
@@ -135,7 +127,6 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="flex items-center space-x-2 ml-auto">
                     <button id="columnConfigBtn" class="p-2 rounded-md hover:bg-gray-100 text-gray-500" data-tooltip="Configure Columns">
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v1a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm2 4a1 1 0 011-1h10a1 1 0 011 1v1a1 1 0 01-1 1H6a1 1 0 01-1-1V7zm2 4a1 1 0 011-1h8a1 1 0 011 1v1a1 1 0 01-1 1H8a1 1 0 01-1-1v-1zm2 4a1 1 0 011-1h6a1 1 0 011 1v1a1 1 0 01-1 1h-6a1 1 0 01-1-1v-1z" clip-rule="evenodd" /></svg>
@@ -148,7 +139,6 @@
             <div id="filterPillsContainer" class="flex flex-wrap gap-2 pt-2"></div>
         </div>
 
-        <!-- Main Content -->
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
             <div id="loading-state" class="p-12 text-center text-gray-500 hidden">
                 <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -158,12 +148,10 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr id="table-header-row">
-                            <!-- Headers dynamically generated -->
-                        </tr>
+                            </tr>
                     </thead>
                     <tbody id="nc-table-body" class="divide-y divide-gray-200 bg-white">
-                       <!-- Rows dynamically generated -->
-                    </tbody>
+                       </tbody>
                 </table>
             </div>
              <div id="empty-state" class="text-center p-12 text-gray-500 hidden">
@@ -173,7 +161,6 @@
             </div>
         </div>
 
-        <!-- Pagination -->
         <div class="flex flex-col md:flex-row items-center justify-between mt-4 text-sm text-gray-600 gap-4">
             <div class="flex items-center gap-2">
                 <span>Rows per page:</span>
@@ -186,12 +173,10 @@
             </div>
             <div id="pagination-summary">Showing 0 to 0 of 0 records</div>
             <div id="pagination-controls" class="flex items-center">
-                <!-- Pagination controls dynamically generated -->
-            </div>
+                </div>
         </div>
     </div>
     
-    <!-- Popovers and Tooltips -->
     <div id="linkagePopover" class="popover w-52"></div>
     <div id="columnConfigPopover" class="popover w-64">
         <h4 class="font-semibold mb-2">Configure Columns</h4>
@@ -407,9 +392,9 @@
             const { tableBody, emptyState } = DOMElements;
             const paginatedData = paginate(state.filteredData, state.currentPage, state.rowsPerPage);
 
-            tableBody.innerHTML = '';
-            tableBody.classList.toggle('hidden', paginatedData.length === 0);
-            emptyState.classList.toggle('hidden', paginatedData.length > 0);
+            if (tableBody) tableBody.innerHTML = '';
+            if (tableBody) tableBody.classList.toggle('hidden', paginatedData.length === 0);
+            if (emptyState) emptyState.classList.toggle('hidden', paginatedData.length > 0);
             
             paginatedData.forEach(item => {
                 const tr = document.createElement('tr');
@@ -452,7 +437,7 @@
                 });
                 
                 tr.innerHTML = cellsHTML;
-                tableBody.appendChild(tr);
+                if (tableBody) tableBody.appendChild(tr);
             });
             handleTableScroll();
         }
@@ -470,28 +455,33 @@
                     </button>` : '';
                 headerHTML += `<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"><div class="flex items-center">${colConfig.label} ${sortIcon}</div></th>`;
             });
-            DOMElements.tableHeaderRow.innerHTML = headerHTML;
+            if (DOMElements.tableHeaderRow) DOMElements.tableHeaderRow.innerHTML = headerHTML;
         }
         
         function renderPills() {
             const { filterPillsContainer, globalSearch, statusFilter, timeRangeFilter } = DOMElements;
-            filterPillsContainer.innerHTML = ''; let hasFilters = false;
+            if (filterPillsContainer) filterPillsContainer.innerHTML = ''; 
+            let hasFilters = false;
             Object.entries(state.filters).forEach(([key, value]) => {
-                if (!value) return; hasFilters = true; let label = '';
+                if (!value) return; 
+                hasFilters = true; 
+                let label = '';
                 if (key === 'globalSearch') label = `Search: "${value}"`;
-                else if (key === 'status') label = statusFilter.options[statusFilter.selectedIndex].text;
-                else if (key === 'timeRange') label = timeRangeFilter.options[timeRangeFilter.selectedIndex].text;
-                if (label) {
+                else if (key === 'status' && statusFilter) label = statusFilter.options[statusFilter.selectedIndex].text;
+                else if (key === 'timeRange' && timeRangeFilter) label = timeRangeFilter.options[timeRangeFilter.selectedIndex].text;
+                if (label && filterPillsContainer) {
                     filterPillsContainer.innerHTML += `<span class="inline-flex items-center gap-x-1.5 rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">${label} <button type="button" class="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-blue-600/20" data-filter-key="${key}" aria-label="Remove ${label} filter"><svg viewBox="0 0 14 14" class="h-3.5 w-3.5 stroke-blue-600/50 group-hover:stroke-blue-600/75"><path d="M4 4l6 6m0-6l-6 6" /></svg></button></span>`;
                 }
             });
-            if (hasFilters) {
+            if (hasFilters && filterPillsContainer) {
                  filterPillsContainer.innerHTML += `<button id="clearFiltersBtn" class="text-sm text-blue-600 hover:underline">Clear All</button>`;
             }
         }
         
         function renderPagination() {
             const { paginationSummary, paginationControls } = DOMElements;
+            if (!paginationSummary || !paginationControls) return;
+
             const totalItems = state.filteredData.length;
             const start = totalItems > 0 ? (state.currentPage - 1) * state.rowsPerPage + 1 : 0;
             const end = Math.min(start + state.rowsPerPage - 1, totalItems);
@@ -509,6 +499,7 @@
         }
 
         function renderColumnCheckboxes() {
+            if (!DOMElements.columnCheckboxes) return;
             DOMElements.columnCheckboxes.innerHTML = '';
             state.allColumnsOrdered.forEach(key => {
                 const col = ALL_COLUMNS.find(c => c.key === key);
@@ -535,69 +526,95 @@
         
         // --- Event Handlers & Helpers ---
         function initEventListeners() {
-            DOMElements.tabsContainer.addEventListener('click', e => {
-                e.preventDefault();
-                const tabButton = e.target.closest('.tab-item');
-                if (tabButton && !tabButton.classList.contains('active')) {
-                    const newTab = tabButton.dataset.tab;
-                    state.currentTab = newTab;
-                    const currentActiveTab = DOMElements.tabsContainer.querySelector('.active');
-                    if (currentActiveTab) {
-                        currentActiveTab.classList.remove('active', 'border-blue-600', 'text-blue-600');
-                        currentActiveTab.classList.add('border-transparent', 'text-gray-500');
-                        currentActiveTab.removeAttribute('aria-current');
+            if (DOMElements.tabsContainer) {
+                DOMElements.tabsContainer.addEventListener('click', e => {
+                    e.preventDefault();
+                    const tabButton = e.target.closest('.tab-item');
+                    if (tabButton && !tabButton.classList.contains('active')) {
+                        const newTab = tabButton.dataset.tab;
+                        state.currentTab = newTab;
+                        const currentActiveTab = DOMElements.tabsContainer.querySelector('.active');
+                        if (currentActiveTab) {
+                            currentActiveTab.classList.remove('active', 'border-blue-600', 'text-blue-600');
+                            currentActiveTab.classList.add('border-transparent', 'text-gray-500');
+                            currentActiveTab.removeAttribute('aria-current');
+                        }
+                        tabButton.classList.add('active', 'border-blue-600', 'text-blue-600');
+                        tabButton.classList.remove('border-transparent', 'text-gray-500');
+                        tabButton.setAttribute('aria-current', 'page');
+                        loadDataForTab();
                     }
-                    tabButton.classList.add('active', 'border-blue-600', 'text-blue-600');
-                    tabButton.classList.remove('border-transparent', 'text-gray-500');
-                    tabButton.setAttribute('aria-current', 'page');
-                    loadDataForTab();
-                }
-            });
+                });
+            }
 
-            DOMElements.globalSearch.addEventListener('input', e => {
-                clearTimeout(state.searchDebounceTimer);
-                state.searchDebounceTimer = setTimeout(() => {
-                    state.filters.globalSearch = e.target.value; state.currentPage = 1; updateView();
-                }, 300);
-            });
-            DOMElements.statusFilter.addEventListener('change', e => {
-                state.filters.status = e.target.value; state.currentPage = 1; updateView();
-            });
-            DOMElements.timeRangeFilter.addEventListener('change', e => {
-                state.filters.timeRange = e.target.value; state.currentPage = 1; updateView();
-            });
-            DOMElements.rowsPerPage.addEventListener('change', e => {
-                state.rowsPerPage = parseInt(e.target.value, 10); state.currentPage = 1; updateView();
-            });
-            DOMElements.tableContainer.addEventListener('scroll', handleTableScroll);
-            DOMElements.filterPillsContainer.addEventListener('click', e => {
-                 if (e.target.closest('#clearFiltersBtn')) { resetFilters(); updateView(); }
-                 const pillRemoveBtn = e.target.closest('[data-filter-key]');
-                 if(pillRemoveBtn) {
-                     const key = pillRemoveBtn.dataset.filterKey; state.filters[key] = '';
-                     if(key === 'globalSearch') DOMElements.globalSearch.value = '';
-                     if(key === 'status') DOMElements.statusFilter.value = '';
-                     if(key === 'timeRange') DOMElements.timeRangeFilter.value = '';
-                     updateView();
-                 }
-            });
-            DOMElements.tableHeaderRow.addEventListener('click', e => {
-                const sortBtn = e.target.closest('[data-sort-key]'); if(!sortBtn) return;
-                const key = sortBtn.dataset.sortKey;
-                if (state.sortConfig.key === key) {
-                    state.sortConfig.direction = state.sortConfig.direction === 'asc' ? 'desc' : 'asc';
-                } else { state.sortConfig = { key, direction: 'asc' }; }
-                updateView();
-            });
-            DOMElements.paginationControls.addEventListener('click', e => {
-                const pageBtn = e.target.closest('[data-page]'); if(!pageBtn) return;
-                const page = pageBtn.dataset.page;
-                const totalPages = Math.ceil(state.filteredData.length / state.rowsPerPage);
-                if(page === 'next') state.currentPage = Math.min(state.currentPage + 1, totalPages);
-                else if(page === 'prev') state.currentPage = Math.max(state.currentPage - 1, 1);
-                else state.currentPage = parseInt(page, 10);
-                updateView();
-            });
+            if (DOMElements.globalSearch) {
+                DOMElements.globalSearch.addEventListener('input', e => {
+                    clearTimeout(state.searchDebounceTimer);
+                    state.searchDebounceTimer = setTimeout(() => {
+                        state.filters.globalSearch = e.target.value; state.currentPage = 1; updateView();
+                    }, 300);
+                });
+            }
+
+            if (DOMElements.statusFilter) {
+                DOMElements.statusFilter.addEventListener('change', e => {
+                    state.filters.status = e.target.value; state.currentPage = 1; updateView();
+                });
+            }
+
+            if (DOMElements.timeRangeFilter) {
+                DOMElements.timeRangeFilter.addEventListener('change', e => {
+                    state.filters.timeRange = e.target.value; state.currentPage = 1; updateView();
+                });
+            }
+
+            if (DOMElements.rowsPerPage) {
+                DOMElements.rowsPerPage.addEventListener('change', e => {
+                    state.rowsPerPage = parseInt(e.target.value, 10); state.currentPage = 1; updateView();
+                });
+            }
+
+            if (DOMElements.tableContainer) {
+                DOMElements.tableContainer.addEventListener('scroll', handleTableScroll);
+            }
+
+            if (DOMElements.filterPillsContainer) {
+                DOMElements.filterPillsContainer.addEventListener('click', e => {
+                     if (e.target.closest('#clearFiltersBtn')) { resetFilters(); updateView(); }
+                     const pillRemoveBtn = e.target.closest('[data-filter-key]');
+                     if(pillRemoveBtn) {
+                         const key = pillRemoveBtn.dataset.filterKey; state.filters[key] = '';
+                         if(key === 'globalSearch' && DOMElements.globalSearch) DOMElements.globalSearch.value = '';
+                         if(key === 'status' && DOMElements.statusFilter) DOMElements.statusFilter.value = '';
+                         if(key === 'timeRange' && DOMElements.timeRangeFilter) DOMElements.timeRangeFilter.value = '';
+                         updateView();
+                     }
+                });
+            }
+
+            if (DOMElements.tableHeaderRow) {
+                DOMElements.tableHeaderRow.addEventListener('click', e => {
+                    const sortBtn = e.target.closest('[data-sort-key]'); if(!sortBtn) return;
+                    const key = sortBtn.dataset.sortKey;
+                    if (state.sortConfig.key === key) {
+                        state.sortConfig.direction = state.sortConfig.direction === 'asc' ? 'desc' : 'asc';
+                    } else { state.sortConfig = { key, direction: 'asc' }; }
+                    updateView();
+                });
+            }
+
+            if (DOMElements.paginationControls) {
+                DOMElements.paginationControls.addEventListener('click', e => {
+                    const pageBtn = e.target.closest('[data-page]'); if(!pageBtn) return;
+                    const page = pageBtn.dataset.page;
+                    const totalPages = Math.ceil(state.filteredData.length / state.rowsPerPage);
+                    if(page === 'next') state.currentPage = Math.min(state.currentPage + 1, totalPages);
+                    else if(page === 'prev') state.currentPage = Math.max(state.currentPage - 1, 1);
+                    else state.currentPage = parseInt(page, 10);
+                    updateView();
+                });
+            }
+
             document.body.addEventListener('mouseover', e => {
                 const target = e.target.closest('[data-tooltip]'); if (target) showTooltip(target);
             });
@@ -606,81 +623,90 @@
             });
 
             // --- Linkage Popover Hover Logic ---
-            DOMElements.tableBody.addEventListener('mouseover', e => {
-                const linkageBtn = e.target.closest('.linkage-btn');
-                if (linkageBtn && !linkageBtn.disabled) {
-                    clearTimeout(linkagePopoverHideTimer);
-                    const linkages = JSON.parse(linkageBtn.dataset.linkages);
-                    if (linkages.count > 0) {
-                        openLinkagePopover(linkageBtn, linkages);
+            if (DOMElements.tableBody) {
+                DOMElements.tableBody.addEventListener('mouseover', e => {
+                    const linkageBtn = e.target.closest('.linkage-btn');
+                    if (linkageBtn && !linkageBtn.disabled) {
+                        clearTimeout(linkagePopoverHideTimer);
+                        const linkages = JSON.parse(linkageBtn.dataset.linkages);
+                        if (linkages.count > 0) {
+                            openLinkagePopover(linkageBtn, linkages);
+                        }
                     }
-                }
-            });
+                });
+            }
 
             const handleLinkageMouseOut = () => {
                 linkagePopoverHideTimer = setTimeout(() => {
-                    DOMElements.linkagePopover.classList.remove('active');
+                    if (DOMElements.linkagePopover) DOMElements.linkagePopover.classList.remove('active');
                 }, 300);
             };
 
-            DOMElements.tableBody.addEventListener('mouseout', e => {
-                if (e.target.closest('.linkage-btn')) {
-                    handleLinkageMouseOut();
-                }
-            });
+            if (DOMElements.tableBody) {
+                DOMElements.tableBody.addEventListener('mouseout', e => {
+                    if (e.target.closest('.linkage-btn')) {
+                        handleLinkageMouseOut();
+                    }
+                });
+            }
 
-            DOMElements.linkagePopover.addEventListener('mouseover', () => {
-                clearTimeout(linkagePopoverHideTimer);
-            });
+            if (DOMElements.linkagePopover) {
+                DOMElements.linkagePopover.addEventListener('mouseover', () => {
+                    clearTimeout(linkagePopoverHideTimer);
+                });
 
-            DOMElements.linkagePopover.addEventListener('mouseout', handleLinkageMouseOut);
+                DOMElements.linkagePopover.addEventListener('mouseout', handleLinkageMouseOut);
+            }
             // --- End Linkage Popover Hover Logic ---
+            if (DOMElements.columnConfigBtn) {
+                DOMElements.columnConfigBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); togglePopover(DOMElements.columnConfigPopover, DOMElements.columnConfigBtn);
+                });
+            }
 
-             DOMElements.columnConfigBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); togglePopover(DOMElements.columnConfigPopover, DOMElements.columnConfigBtn);
-            });
-            DOMElements.columnCheckboxes.addEventListener('change', e => {
-                if (e.target.classList.contains('column-toggle')) {
-                    const key = e.target.dataset.key;
-                    state.columnVisibility[key] = e.target.checked;
-                    updateView();
-                }
-            });
+            if (DOMElements.columnCheckboxes) {
+                DOMElements.columnCheckboxes.addEventListener('change', e => {
+                    if (e.target.classList.contains('column-toggle')) {
+                        const key = e.target.dataset.key;
+                        state.columnVisibility[key] = e.target.checked;
+                        updateView();
+                    }
+                });
 
-            // Drag and Drop Event Listeners
-            let draggedElement = null;
-            const dragContainer = DOMElements.columnCheckboxes;
-            dragContainer.addEventListener('dragstart', e => {
-                draggedElement = e.target.closest('[draggable="true"]');
-                if (draggedElement) {
-                    e.dataTransfer.effectAllowed = 'move';
-                    setTimeout(() => draggedElement.classList.add('dragging'), 0);
-                }
-            });
-            dragContainer.addEventListener('dragover', e => {
-                e.preventDefault();
-                const targetElement = e.target.closest('[draggable="true"]');
-                if (targetElement && targetElement !== draggedElement) {
-                    const rect = targetElement.getBoundingClientRect();
-                    const nextElement = (e.clientY - rect.top) > (rect.height / 2) ? targetElement.nextSibling : targetElement;
-                    dragContainer.insertBefore(draggedElement, nextElement);
-                }
-            });
-            dragContainer.addEventListener('drop', e => {
-                e.preventDefault();
-                if (draggedElement) {
-                    const newOrder = Array.from(dragContainer.children).map(child => child.dataset.key);
-                    state.allColumnsOrdered = newOrder;
-                    updateView();
-                }
-            });
-            dragContainer.addEventListener('dragend', () => {
-                if (draggedElement) {
-                    draggedElement.classList.remove('dragging');
-                    draggedElement = null;
-                }
-            });
-
+                // Drag and Drop Event Listeners
+                let draggedElement = null;
+                const dragContainer = DOMElements.columnCheckboxes;
+                dragContainer.addEventListener('dragstart', e => {
+                    draggedElement = e.target.closest('[draggable="true"]');
+                    if (draggedElement) {
+                        e.dataTransfer.effectAllowed = 'move';
+                        setTimeout(() => draggedElement.classList.add('dragging'), 0);
+                    }
+                });
+                dragContainer.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    const targetElement = e.target.closest('[draggable="true"]');
+                    if (targetElement && targetElement !== draggedElement) {
+                        const rect = targetElement.getBoundingClientRect();
+                        const nextElement = (e.clientY - rect.top) > (rect.height / 2) ? targetElement.nextSibling : targetElement;
+                        dragContainer.insertBefore(draggedElement, nextElement);
+                    }
+                });
+                dragContainer.addEventListener('drop', e => {
+                    e.preventDefault();
+                    if (draggedElement) {
+                        const newOrder = Array.from(dragContainer.children).map(child => child.dataset.key);
+                        state.allColumnsOrdered = newOrder;
+                        updateView();
+                    }
+                });
+                dragContainer.addEventListener('dragend', () => {
+                    if (draggedElement) {
+                        draggedElement.classList.remove('dragging');
+                        draggedElement = null;
+                    }
+                });
+            }
 
             document.addEventListener('click', e => {
                 if (!e.target.closest('.popover')) {
@@ -696,6 +722,7 @@
         
         function openLinkagePopover(button, linkages) {
             const { linkagePopover } = DOMElements;
+            if (!linkagePopover) return;
 
             // Map linkage types to SVG icons
             const icons = {
@@ -728,6 +755,8 @@
         }
 
         function togglePopover(popover, button, position = 'right') {
+            if (!popover || !button) return;
+
             if (popover.classList.contains('active')) {
                 popover.classList.remove('active');
                 return;
@@ -773,9 +802,9 @@
         
         function resetFilters() {
             state.filters = { globalSearch: '', status: '', timeRange: ''};
-            DOMElements.globalSearch.value = '';
-            DOMElements.statusFilter.value = '';
-            DOMElements.timeRangeFilter.value = '';
+            if (DOMElements.globalSearch) DOMElements.globalSearch.value = '';
+            if (DOMElements.statusFilter) DOMElements.statusFilter.value = '';
+            if (DOMElements.timeRangeFilter) DOMElements.timeRangeFilter.value = '';
         }
 
         // --- Utility Functions ---
@@ -791,21 +820,24 @@
         function paginate(array, num, size) { return array.slice((num - 1) * size, num * size); }
         function handleTableScroll() {
             const el = DOMElements.tableContainer;
-            el.classList.toggle('is-scrolling-right', el.scrollWidth > el.clientWidth && el.scrollWidth - el.scrollLeft - el.clientWidth > 1);
+            if (el) {
+                el.classList.toggle('is-scrolling-right', el.scrollWidth > el.clientWidth && el.scrollWidth - el.scrollLeft - el.clientWidth > 1);
+            }
         }
         function showTooltip(el) {
-            const t = DOMElements.customTooltip; t.textContent = el.dataset.tooltip; t.style.display = 'block';
-            const rect = el.getBoundingClientRect();
-            t.style.top = `${rect.top + window.scrollY - t.offsetHeight - 5}px`;
-            t.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (t.offsetWidth / 2)}px`;
+            const t = DOMElements.customTooltip; 
+            if (t) {
+                t.textContent = el.dataset.tooltip; t.style.display = 'block';
+                const rect = el.getBoundingClientRect();
+                t.style.top = `${rect.top + window.scrollY - t.offsetHeight - 5}px`;
+                t.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (t.offsetWidth / 2)}px`;
+            }
         }
-        function hideTooltip() { DOMElements.customTooltip.style.display = 'none'; }
+        function hideTooltip() { 
+            if (DOMElements.customTooltip) {
+                DOMElements.customTooltip.style.display = 'none'; 
+            }
+        }
     </script>
 </body>
 </html>
-
-
-
-
-
-
