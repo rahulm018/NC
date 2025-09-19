@@ -2,14 +2,14 @@
 // To add, remove, or change a link, you only need to edit this array.
 const PAGES = [
     // Standalone link example
-    { id: 'hub', title: 'Hub', url: 'index.html', isStandalone: true },
+    { id: 'hub', title: 'Hub', url: '#hub', isStandalone: true }, // Changed
     // Grouped links example
-    { id: 'listing', title: 'Listing', url: 'NC Listing Page.html', description: 'Browse all NC reports.', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>`, group: 'NC Group' },
-    { id: 'creation', title: 'Creation', url: 'NC Creation and Edit Page.html', description: 'Launch a new NC report.', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`, group: 'NC Group' },
-    { id: 'view', title: 'View', url: '#', description: 'Track a specific NC.', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`, group: 'NC Group' },
-    { id: 'dashboard', title: 'Dashboard', url: '#', description: 'Visualize NC data.', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>`, group: 'NC Group' },
-    { id: '8d_view', title: 'View', url: '#', description: 'View 8D reports.', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`, group: '8D Group' },
-    { id: 'copq_mapping', title: 'Mapping', url: 'CoPQ/Template/Mapping.html', description: 'Map CoPQ data points.', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`, group: 'CoPQ Group' },
+    { id: 'listing', title: 'Listing', url: '#listing', description: '...', icon: '...', group: 'NC Group' }, // Changed
+    { id: 'creation', title: 'Creation', url: '#creation', description: '...', icon: '...', group: 'NC Group' }, // Changed
+    { id: 'view', title: 'View', url: '#view', description: '...', icon: '...', group: 'NC Group' }, // Changed
+    { id: 'dashboard', title: 'Dashboard', url: '#dashboard', description: '...', icon: '...', group: 'NC Group' }, // Changed
+    { id: '8d_view', title: 'View', url: '#', description: '...', icon: '...', group: '8D Group' },
+    { id: 'copq_mapping', title: 'Mapping', url: '#copq_mapping', description: '...', icon: '...', group: 'CoPQ Group' }, // Changed
 ];
 
 // Group pages by their 'group' property
