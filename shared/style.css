@@ -32,8 +32,22 @@
   }
   
   /* --- New styles for Clickable Dropdown --- */
-  .dropdown-menu {
-    @apply absolute top-full left-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden;
+.dropdown-menu {
+    /* The 'hidden' class has been removed from the @apply rule below */
+    @apply absolute top-full left-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-10;
+    
+    /* Manually control visibility to allow for animations */
+    display: none; 
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  }
+
+  .dropdown-menu.active {
+    @apply block;
+    opacity: 1;
+    transform: translateY(0);
+  }
     /* Start hidden */
     opacity: 0;
     transform: translateY(-10px);
