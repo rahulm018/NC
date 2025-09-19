@@ -43,4 +43,3 @@ function initializeFooter() {
 }
 
 document.addEventListener('DOMContentLoaded', initializeFooter);
-
